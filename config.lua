@@ -2,6 +2,7 @@ Config = {}
 Config.Notify = 'gta' -- gta | okokNotify
 Config.Lang = 'en'
 Config.Locales = {}
+Config.ProgressBar = 'mythic' -- mythic | qb
 
 Config.Zones = {
     ['scrapyard1'] = {

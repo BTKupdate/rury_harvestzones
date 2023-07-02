@@ -74,29 +74,49 @@ end)
 
 function startHarvest(z,p,r)
   FreezeEntityPosition(PlayerPedId(), true)
-  TriggerEvent("mythic_progbar:client:progress", {
-    name = "rury_harvest",
-    duration = Config.Zones[z].harvestingTime,
-    label = Config.Zones[z].progressText,
-    useWhileDead = false,
-    canCancel = false,
-    controlDisables = {
+  if Config.ProgressBar == 'mythic' then
+    TriggerEvent("mythic_progbar:client:progress", {
+      name = "rury_harvest",
+      duration = Config.Zones[z].harvestingTime,
+      label = Config.Zones[z].progressText,
+      useWhileDead = false,
+      canCancel = false,
+      controlDisables = {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = true,
+      },
+      animation = {
+        animDict = Config.Zones[z].animation and Config.Zones[z].animation.dict or 'amb@world_human_gardener_plant@male@base',
+        anim = Config.Zones[z].animation and Config.Zones[z].animation.anim or 'base',
+      },
+      prop = Config.Zones[z].animation and Config.Zones[z].animation.prop or {}
+    }, function(status)
+        FreezeEntityPosition(PlayerPedId(), false)
+        clientData.KD[z..'-'..p] = GetGameTimer()
+        clientData.currentPoint = nil
+        TriggerServerEvent('rury:harvest:finish', r)
+    end)
+  end
+  if Config.ProgressBar == 'qb' then
+    QBCore = exports['qb-core']:GetCoreObject()
+    QBCore.Functions.Progressbar("harvest_task", Config.Zones[z].progressText, Config.Zones[z].harvestingTime, false, false, {
       disableMovement = true,
       disableCarMovement = true,
       disableMouse = false,
       disableCombat = true,
-    },
-    animation = {
+    }, {
       animDict = Config.Zones[z].animation and Config.Zones[z].animation.dict or 'amb@world_human_gardener_plant@male@base',
       anim = Config.Zones[z].animation and Config.Zones[z].animation.anim or 'base',
-    },
-    prop = Config.Zones[z].animation and Config.Zones[z].animation.prop or {}
-  }, function(status)
+      flags = 0,
+    }, (Config.Zones[z].animation and Config.Zones[z].animation.prop or {}), {}, function() -- Done
       FreezeEntityPosition(PlayerPedId(), false)
       clientData.KD[z..'-'..p] = GetGameTimer()
       clientData.currentPoint = nil
       TriggerServerEvent('rury:harvest:finish', r)
-  end)
+    end)
+  end
 end
 
 --------------------------------------------------------------------------------------------
