@@ -3,7 +3,7 @@ RegisterServerEvent('rury:harvest:finish', function(name)
     local identifier = GetPlayerIdentifier(src)
     local vipBonus
     if GetResourceState('rury_vip') == 'started' then
-        local vip = exports['rury_vip']:getVip(xPlayer.identifier)
+        local vip = exports['rury_vip']:getVip(identifier)
         if vip and vip.privilege and vip.privilege.harvest_bonus then
             vipBonus = vip.privilege.harvest_bonus
         end
